@@ -1,0 +1,14 @@
+#!/bin/bash
+# The run script executes the server that runs your application.
+#
+# For more information see the documentation:
+#       https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+DEPLOY_DIR=$CATALINA_HOME/webapps/
+curl -fSL "https://github.com/proarc/proarc/releases/download/v3.1/proarc-3.1-release.zip" -o proarc.zip
+
+unzip proarc.zip 
+mv proarc-3.1-20160701181742/proarc.war $DEPLOY_DIR
+
+# TODO

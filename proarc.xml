@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+  <Resource name="jdbc/proarc" auth="Container"
+        type="javax.sql.DataSource" initialSize="3"
+        maxActive="100" maxIdle="30" maxWait="10000"
+        username="proarcAdmin" password="proarcAdmin"
+        driverClassName="org.postgresql.Driver"
+        url="jdbc:postgresql://proarcPostgres:5432/proarc"/>
+</Context>
