@@ -1,0 +1,217 @@
+#
+# ProArc Configuration Template
+#
+# Version 3.1
+#
+# The template lists default properties. To override them copy given properties
+# to $PROARC_HOME/proarc.cfg.
+#
+# The template file is auto generated and all changes will be descarded!
+
+## Default location for user data. It contains newly created user home folders.
+proarc.users.home=${proarc.home}/users
+
+## Fedora client credentials
+fedora.client.url=http://localhost:8080/fedora
+fedora.client.username=fedoraAdmin
+fedora.client.password=fedoraAdmin
+
+## The comma separated list of autheticators for user login.
+# Supported values are proarc (internal users), desa (remote users).
+authenticators=proarc
+
+## The comma separated list of digital object plugin IDs.
+# Supported values are ndk, k4, desa-der, desa-des, oldprint,.bdm
+digobject.plugins=ndk, k4
+
+## Bibliographic metadata catalogs
+# lists catalog IDs to include in configuration
+catalogs=aleph_nkp
+
+# RD CZ
+#catalog.rdcz.url=http://registrdigitalizace.cz/soapservices
+#catalog.rdcz.name=registrdigitalizace.cz
+#catalog.rdcz.user=
+#catalog.rdcz.password=
+#catalog.rdcz.type=DigitizationRegistryCatalog
+## Permitted fields: barcode, ccnb, isbn, issn, signature, title.
+#catalog.rdcz.fields=
+#catalog.rdcz.field.isbn.title=ISBN
+
+# Aleph NKP
+catalog.aleph_nkp.url=http://aleph.nkp.cz/X?base=nkc
+catalog.aleph_nkp.name=Aleph NKP
+catalog.aleph_nkp.type=AlephXServer
+
+# Z39.50
+# <port> is mandatory!
+#catalog.z3950.url=<hostname>:<port>
+#catalog.z3950.base=DATABASE_ID
+#catalog.z3950.name=Z39.50 Catalog
+#catalog.z3950.type=Z3950Catalog
+# recordCharset is optional; use in case the server returns records with unexpected charset
+# http://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html
+#catalog.z3950.recordCharset=UTF-8
+## optional fields declaration
+## query - field property to redefine RPN query. %s is replaced with query terms
+##         see http://www.indexdata.com/zebra/doc/querymodel-rpn.html
+## title - field title to display in UI
+#catalog.z3950.fields=issn, isbn
+#catalog.z3950.field.issn.query=@attrset bib-1 @attr 1=8 "%s"
+#catalog.z3950.field.issn.title=ISSN
+#catalog.z3950.field.isbn.query=@attrset bib-1 @attr 1=7 "%s"
+#catalog.z3950.field.isbn.title=ISBN
+
+# OAI
+#catalog.oaiID.url=http://arXiv.org/oai2
+#catalog.oaiID.type=OAICatalog
+#catalog.oaiID.name=OAI Catalog
+## OAI metadata prefix
+#catalog.oaiID.metadataPrefix=marc21
+## optional identifier prefix that is inserted to the user query
+#catalog.oaiID.identifierPrefix=oai:arXiv.org:
+## Permitted fields: id
+#catalog.oaiID.fields=id
+#catalog.oaiID.field.id.title=Identifier
+
+## Import options
+
+# A comma separated list of import profile IDs. Each ID is used as a prefix of keys
+# to describe the profile (ID.label, ID.description, ID.file).
+# ID.file has an URL syntax. Absolute and relative (to proarc.cfg) paths are possible.
+# Referenced profile files have the same syntax as proarc.cfg.
+import.profiles=profile.default, profile.default_archive_import
+
+# profile.default is an ID of proarc.cfg. It is the default profile.
+profile.default.label=Default
+profile.default.description=Default profile
+
+# profile.default_archive_import is an ID of the default archive import profile
+# that is based on proarc.cfg
+profile.default_archive_import.label=Archive
+profile.default_archive_import.description=Archive import profile
+
+# The model ID of new pages created with the batch import.
+import.page.modelId=model:page
+
+# Comma separated list of datastream IDs that are required on import.
+import.requiredDatastreamId=ALTO, NDK_ARCHIVAL, NDK_USER, TEXT_OCR
+
+# Algorithm to scale an image with java.image.
+# Supported values:
+#   AREA_AVERAGING, BICUBIC_STEPPED, BILINEAR, BICUBIC, BILINEAR_STEPPED,
+#   NEAREST_NEIGHBOR, NEAREST_NEIGHBOR_STEPPED, REPLICATE
+import.image.java.scalingMethod=BICUBIC_STEPPED
+
+## PREVIEW datastream
+# max width to scale origin scan
+#import.image.preview.maxWidth=
+# max height to scale origin scan
+import.image.preview.maxHeight=1000
+# Algorithm to scale an image.
+import.image.preview.java.scalingMethod=${import.image.java.scalingMethod}
+
+## THUMBNAIL datastream
+# max width to scale origin scan
+import.image.thumbnail.maxWidth=120
+# max height to scale origin scan
+import.image.thumbnail.maxHeight=128
+# Algorithm to scale an image.
+import.image.thumbnail.java.scalingMethod=${import.image.java.scalingMethod}
+
+## TEXT_OCR datastream
+# The filename suffix to match file containing plain text OCR.
+# In case of ABA00726009905207199800001.tif scan the import will look
+# for related ABA00726009905207199800001.ocr.txt.
+import.text_ocr.file.suffix=.ocr.txt
+# The encoding of plain text OCR
+import.text_ocr.file.charset=UTF-8
+
+## ALTO datastream
+# The filename suffix to match file containing ALTO OCR.
+# In case of ABA00726009905207199800001.tif scan the import will look
+# for related ABA00726009905207199800001.ocr.xml.
+import.alto.file.suffix=.ocr.xml
+
+## NDK_ARCHIVAL, NDK_USER datastreams
+# The filename suffix to match file containing archive and user copy of RAW datastream
+# In case of ABA00726009905207199800001.tif scan the import will look
+# for related ABA00726009905207199800001.ac.jp2 and .ABA00726009905207199800001.uc.jp2
+import.ndk_archival.file.suffix=.ac.jp2
+import.ndk_user.file.suffix=.uc.jp2
+
+## Kramerius4 export options
+
+# list datastreams to exclude from export
+export.kramerius4.excludeDatastreamId=AUDIT, RAW, PRIVATE_NOTE, NDK_ARCHIVAL, NDK_USER, NDK_ARCHIVAL_MIX, RAW_MIX
+
+# export.kramerius4.rename.<datastreamId>=krameriusDatastreamId
+# mapping of ProArc datastream IDs to Kramerius IDs
+export.kramerius4.rename.FULL=IMG_FULL
+export.kramerius4.rename.PREVIEW=IMG_PREVIEW
+export.kramerius4.rename.THUMBNAIL=IMG_THUMB
+
+# default access policy used for exported object. Values: policy:private|policy:public|<empty>
+export.kramerius4.policy=policy:private
+
+## URN:NBN resolvers
+
+# Comma separated list of resolver profiles.
+#urnnbn.resolvers=knav
+
+# The registrar ID.
+#urnnbn.resolver.knav.registrar=aba007
+
+# The optional archivar ID.
+#urnnbn.resolver.knav.archiver=18
+
+#urnnbn.resolver.knav.title=KNAV Test
+
+# The resolver service URL.
+#urnnbn.resolver.knav.url=https://resolver-test.nkp.cz/api/v3
+
+# The resolver service user name.
+#urnnbn.resolver.knav.user=
+
+# The resolver service password.
+#urnnbn.resolver.knav.passwd=
+
+## DESA
+
+# Comma separated list of DESA configuration IDs. Each configuration describes
+# remote DESA registry that can accept exported SIPs or provide value maps
+# to forms.
+#desa.services=der, des
+
+## DER registry
+## The user name for DESA client
+#desa.der.user=
+## The password for DESA client
+#desa.der.password=
+## The default producer code used for non DESA users
+#desa.der.producer=PROARC
+## The default operator name used for non DESA users
+#desa.der.operator=
+#desa.der.restapi=https://SERVER/dea-frontend/rest/sipsubmission
+#desa.der.webservice=https://SERVER/dea-frontend/ws/SIPSubmissionService
+## Comma separated list of model IDs of digital objects that can be sent to
+## this service on exports.
+#desa.der.exportModels=model:derFolder, model:derDocument, model:derFile
+## Comma sparated list of acronyms to fetch nomenclatures.
+#desa.der.nomenclatureAcronyms=RecCl
+## Time in minutes when cached nomenclatures expire and the system fetches
+## them remotely again; 1 day = 1440 min
+## A negative value implies eternity. Zero implies no cache.
+#desa.der.nomenclatureCacheExpiration=1440
+#
+## DES registry
+#desa.des.user=
+#desa.des.password=
+#desa.des.producer=PROARC
+#desa.des.operator=
+#desa.des.restapi=https://SERVER/dea-frontend/rest/sipsubmission
+#desa.des.webservice=https://SERVER/dea-frontend/ws/SIPSubmissionService
+#desa.des.exportModels=model:desFolder, model:desInternalRecord, model:desExternalRecord, model:desFile
+#desa.des.nomenclatureAcronyms=DocType, RecCl, RdCntrl, RecType
+#desa.des.nomenclatureCacheExpiration=1440
+

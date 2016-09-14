@@ -16,10 +16,15 @@ LABEL io.k8s.description="Proarc" \
     io.openshift.tags="builder,proarc" \
     io.openshift.s2i.scripts-url="image:///usr/libexec/s2i"
 
-RUN INSTALL_PKGS="tar java-1.8.0-openjdk java-1.8.0-openjdk-devel" && \
-    yum install -y --enablerepo=centosplus $INSTALL_PKGS && \
-    rpm -V $INSTALL_PKGS && \
-    yum clean all -y
+#RUN INSTALL_PKGS="tar java-1.8.0-openjdk java-1.8.0-openjdk-devel" && \
+#    yum install -y --enablerepo=centosplus $INSTALL_PKGS && \
+#    rpm -V $INSTALL_PKGS && \
+#    yum clean all -y
+RUN curl -sL --no-verbose http://ftp-devel.mzk.cz/jre/jdk-8u101-linux-x64.tar.gz -o /tmp/java.tar.gz
+RUN mkdir -p /usr/local/java
+ENV JAVA_HOME /usr/local/java/jdk1.8.0_101
+RUN tar xzf /tmp/java.tar.gz --directory=/usr/local/java
+ENV PATH $JAVA_HOME/bin:$PATH
 
 WORKDIR $CATALINA_HOME
 
@@ -51,7 +56,7 @@ RUN set -x \
 
 RUN curl -sL "$JDBC_DRIVER_DOWNLOAD_URL" -o $CATALINA_HOME/lib/postgresql-9.4.1208.jar
 ADD proarc.xml $CATALINA_HOME/conf/Catalina/localhost/proarc.xml
-
+ADD .proarc $CATALINA_HOME/.proarc
 COPY  ["run", "assemble", "save-artifacts", "usage", "/usr/libexec/s2i/"]
 
 ENV TOMCAT_USER tomcat
