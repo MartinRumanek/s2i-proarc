@@ -1,13 +1,13 @@
 FROM openshift/base-centos7
 
 MAINTAINER Martin Rumanek <martin@rumanek.cz>
-ENV GRADLE_VERSION=2.12
-ENV TOMCAT_MAJOR 8
-ENV TOMCAT_VERSION 8.5.5
-ENV CATALINA_HOME /usr/local/tomcat
-ENV JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
-ENV TOMCAT_TGZ_URL https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz
-ENV JDBC_DRIVER_DOWNLOAD_URL https://jdbc.postgresql.org/download/postgresql-9.4.1208.jar
+ENV MAVEN_VERSION=3.3.9 \
+    TOMCAT_MAJOR=8 \
+    TOMCAT_VERSION=8.5.5 \
+    CATALINA_HOME=/usr/local/tomcat \
+    JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8 
+ENV TOMCAT_TGZ_URL=https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz \
+    JDBC_DRIVER_DOWNLOAD_URL=https://jdbc.postgresql.org/download/postgresql-9.4.1208.jar
 
 # Set the labels that are used for Openshift to describe the builder image.
 LABEL io.k8s.description="Proarc" \
@@ -16,15 +16,19 @@ LABEL io.k8s.description="Proarc" \
     io.openshift.tags="builder,proarc" \
     io.openshift.s2i.scripts-url="image:///usr/libexec/s2i"
 
-#RUN INSTALL_PKGS="tar java-1.8.0-openjdk java-1.8.0-openjdk-devel" && \
-#    yum install -y --enablerepo=centosplus $INSTALL_PKGS && \
-#    rpm -V $INSTALL_PKGS && \
-#    yum clean all -y
-RUN curl -sL --no-verbose http://ftp-devel.mzk.cz/jre/jdk-8u101-linux-x64.tar.gz -o /tmp/java.tar.gz
+RUN curl -sL --no-verbose http://ftp-devel.mzk.cz/jre/jdk-7u75-linux-x64.tar.gz -o /tmp/java.tar.gz
 RUN mkdir -p /usr/local/java
-ENV JAVA_HOME /usr/local/java/jdk1.8.0_101
+ENV JAVA_HOME /usr/local/java/jdk1.7.0_75
 RUN tar xzf /tmp/java.tar.gz --directory=/usr/local/java
 ENV PATH $JAVA_HOME/bin:$PATH
+
+RUN INSTALL_PKGS="tar" && \
+    yum install -y --enablerepo=centosplus $INSTALL_PKGS && \
+    rpm -V $INSTALL_PKGS && \
+    yum clean all -y && \
+     (curl -v https://www.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | \
+    tar -zx -C /usr/local) && \
+    ln -sf /usr/local/apache-maven-$MAVEN_VERSION/bin/mvn /usr/local/bin/mvn
 
 WORKDIR $CATALINA_HOME
 
