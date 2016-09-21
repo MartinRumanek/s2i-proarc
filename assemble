@@ -39,5 +39,6 @@ mvn com.isomorphic:isc-maven-plugin:install -Dproduct=SMARTGWT -Dlicense=LGPL -D
 pushd $LOCAL_SOURCE_DIR &> /dev/null
 mvn install -Pproarc.fixedSmartGwt -DskipTests
 
+mv proarc-webapp/target/proarc.war $DEPLOY_DIR
 
 # TODO
