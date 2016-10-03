@@ -2,12 +2,13 @@ FROM openshift/base-centos7
 
 MAINTAINER Martin Rumanek <martin@rumanek.cz>
 ENV MAVEN_VERSION=3.3.9 \
-    TOMCAT_MAJOR=7 \
-    TOMCAT_VERSION=7.0.72 \
+    TOMCAT_MAJOR=8 \
+    TOMCAT_VERSION=8.5.5 \
     CATALINA_HOME=/usr/local/tomcat \
-    JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8 
+    JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8 \
+    JAVA_OPTS -Dfile.encoding=UTF8 -Djava.awt.headless=true -Dfile.encoding=UTF8 -XX:MaxPermSize=256m -Xms1024m -Xmx3072m 
 ENV TOMCAT_TGZ_URL=https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz \
-    JDBC_DRIVER_DOWNLOAD_URL=https://jdbc.postgresql.org/download/postgresql-9.4.1208.jar
+    JDBC_DRIVER_DOWNLOAD_URL=https://jdbc.postgresql.org/download/postgresql-9.4.1211.jre7.jar
 
 # Set the labels that are used for Openshift to describe the builder image.
 LABEL io.k8s.description="Proarc" \
