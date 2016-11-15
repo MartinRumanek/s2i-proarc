@@ -1,6 +1,885 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-The default workflow profiles configuration.
+Pro pojmenování (name) elementů používat prefix podle druhu elementu,
+např: job.ndk,  material.physicalObject, task.checkIn
 -->
 <workflow xmlns="http://proarc.lib.cas.cz/xml/common/workflow/v1">
+
+    
+    <!-- ************************************************************************
+    ******************** REGISTRACE MATERIÁLŮ **********************************
+    ************************************************************************ -->
+
+    <material name="material.physicalObject" type="PHYSICAL_DOCUMENT">
+        <title lang="cs">Fyzická jednotka</title>
+    </material>
+    <material name="material.folder.rawScan" type="FOLDER">
+        <title lang="cs">Adresář surových skenů</title>
+    </material>
+    <material name="material.folder.masterCopy" type="FOLDER">
+        <title lang="cs">Adresář upravených skenů</title>
+    </material>
+    <material name="material.folder.ocr" type="FOLDER">
+        <title lang="cs">Adresář souborů OCR</title>
+    </material>
+    <material name="material.digitalDocument" type="DIGITAL_OBJECT">
+        <title lang="cs">Digitální dokument</title>
+    </material>
+    <material name="material.folder.OcrAndProcessedImages" type="FOLDER">
+        <title lang="cs">Adresář upravených skenů a OCR</title>
+    </material>
+    
+
+    
+    <!-- ***********************************************************************
+        *** REGISTRACE EXTERNÍCH A DEFINICE INTERNÍCH ČÍSELNÍKŮ ****************
+    ************************************************************************    -->
+
+    <valuemap name="wf.valuemap.boolean"  >
+        <value key="0">Ne</value>
+        <value key="1">Ano</value>
+    </valuemap>
+    <valuemap name="proarc.device.scanner" source="PROARC" ></valuemap>
+    <valuemap name="proarc.device.ocr" source="PROARC" ></valuemap>
+    <valuemap name="wf.valuemap.imageColor"  >
+        <value key="BW">BW</value>
+        <value key="4 bit">4 bit</value>
+        <value key="8 bit">8 bit</value>
+        <value key="color">Barevně</value>
+    </valuemap>
+    <valuemap name="wf.valuemap.fileFormat"  >
+        <value>tiff</value>
+        <value>jp2</value>
+        <value>xml</value>
+        <value>txt</value>
+        <value>pdf</value>
+        <value>jpeg</value>
+    </valuemap>
+
+
+
+    <!-- ************************************************************************
+    ****************** DEFINICE TYPŮ PRÁCE *************************************
+    ************************************************************************ -->
+
+    <task name = "task.checkIn">
+        <title lang="cs">Check-in</title>
+        <hint lang="cs">Založení záměru, výběr materálu a volba profilu.</hint>
+        <hint lang="en">Check-in</hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+    </task>
+    <task name = "task.chooseTitle">
+        <title lang="cs">Výběr titulu</title>
+        <hint lang="cs">Výběr titulu k digitalizaci. </hint>
+        <hint lang="en">Choice of Title</hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+    </task>
+    <task name = "task.chooseProfile">
+        <title lang="cs">Volba profilu zpracování</title>
+        <hint lang="cs">Volba profilu zpracování.</hint>
+        <hint lang="en">Choice of Profile</hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+    </task>
+    <task name = "task.deduplicate">
+        <title lang="cs">Deduplikace</title>
+        <hint lang="cs">Deduplikace.</hint>
+        <hint lang="en"></hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+    </task>
+    <task name = "task.recatalog">
+        <title lang="cs">Rekatalogizace</title>
+        <hint lang="cs">Rekatalogizace "s knihou v ruce" - jmenná, věcná, SK - aktualizace/import záznamu.</hint>
+        <hint lang="en">Recataloging</hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+    </task>
+    <task name = "task.numberCnb">
+        <title lang="cs">Číslo ČNB</title>
+        <hint lang="cs">Přidělení čísla ČNB, pokud na něj má dokument nárok.</hint>
+        <hint lang="en">CNB number</hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+    </task>
+    <task name = "task.updateBibInfo">
+        <title lang="cs">Aktualizace bibliografických údajů v záměru</title>
+        <hint lang="cs">Aktualizace bibliografických údajů v záměru u záznamů po rekatalogizaci.</hint>
+        <hint lang="en">Update of bibliographic record after recataloging</hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+    </task>
+    <task name = "task.getItem">
+        <title lang="cs">Převzetí předlohy</title>
+        <hint lang="cs">Převzetí předlohy.</hint>
+        <hint lang="en">Getting item</hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+    </task>
+    <task name = "task.RdImportProgress">
+        <title lang="cs">Hlášení do RD (ve zpracování)</title>
+        <hint lang="cs">Hlášení digitalizace (stav Ve zpracování) do Registru digitalizace.</hint>
+        <hint lang="en">Import to Digitisation Registry - status In Process</hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+        <param name="param.RdImportProgress.batch" required="true" type="STRING" displayType="TEXT" >
+            <title lang="cs">Dávka pro RD - ve zpracování</title>
+            <hint lang="cs">Název importní dávky pro RD - ve zpracování</hint>
+            <title lang="en">RD import progress batch</title>
+            <hint lang="en">RD import progress batch</hint>
+        </param>
+    </task>
+    <task name = "task.prepareItem">
+        <title lang="cs">Příprava předlohy</title>
+        <hint lang="cs">Příprava předlohy.</hint>
+        <hint lang="en">Preparing of item</hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+    </task>
+    <task name = "task.unbindItem">
+        <title lang="cs">Rozvázání předlohy</title>
+        <hint lang="cs">Rozvolnění vazby předlohy (v případě pevné vazby, která znemožňuje naskenování).</hint>
+        <hint lang="en">Unbinding</hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+    </task>
+    <task name = "task.pageCutting">
+        <title lang="cs">Rozřezání stránek</title>
+        <hint lang="cs">Odeslání do vazárny a rozřezání neoddělených stránek.</hint>
+        <hint lang="en">Page cutting</hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+    </task>
+    <task name = "task.scanOfCover">
+        <title lang="cs">Skenování obálky a příloh</title>
+        <hint lang="cs">Skenování obálky, ilustrací, fotek nebo map.</hint>
+        <hint lang="en">Scanning of cover and illustrations</hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+        <setMaterial materialRef="material.folder.rawScan" way="OUTPUT" />
+        <param name="param.scanOfCover.numberOfScans" required="true" type="NUMBER" >
+            <title lang="cs">Počet skenů</title>
+            <hint lang="cs">Počet skenů</hint>
+            <title lang="en">Number of scans</title>
+            <hint lang="en">Number of scans.</hint>
+        </param>
+        <param name="param.scanOfCover.scanner" type="STRING" displayType="COMBOBOX" datasource="proarc.device.scanner" >
+            <title lang="cs">Skener</title>
+            <hint lang="cs">Skener</hint>
+            <title lang="en">Scanner</title>
+            <hint lang="en">Scanner</hint>
+        </param>
+        <param name="param.scanOfCover.imageColor" type="STRING" displayType="COMBOBOX" datasource="wf.valuemap.imageColor" >
+            <title lang="cs">Barevnost</title>
+            <hint lang="cs">Barevnost</hint>
+            <title lang="en">Color</title>
+            <hint lang="en">Color</hint>
+        </param>
+        <param name="param.scanOfCover.fileFormat" type="STRING" displayType="COMBOBOX" datasource="wf.valuemap.fileFormat" >
+            <title lang="cs">Formát souboru</title>
+            <hint lang="cs">Formát souboru</hint>
+            <title lang="en">File format</title>
+            <hint lang="en">File format</hint>
+        </param>
+        <param name="param.scanOfCover.dpi" type="NUMBER" >
+            <title lang="cs">DPI</title>
+            <hint lang="cs">Rozlišení DPI</hint>
+            <title lang="en">dpi</title>
+            <hint lang="en">Dots per inch.</hint>
+        </param>
+    </task>
+    <task name = "task.scan">
+        <title lang="cs">Skenování</title>
+        <hint lang="cs">Skenování.</hint>
+        <hint lang="en">Scanning</hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+        <setMaterial materialRef="material.folder.rawScan" way="OUTPUT" />
+        <param name="param.scan.numberOfScans" required="true" type="NUMBER" >
+            <title lang="cs">Počet skenů</title>
+            <hint lang="cs">Počet skenů</hint>
+            <title lang="en">Number of scans</title>
+            <hint lang="en">Number of scans.</hint>
+        </param>
+        <param name="param.scan.scanner" type="STRING" displayType="COMBOBOX" datasource="proarc.device.scanner" >
+            <title lang="cs">Skener</title>
+            <hint lang="cs">Skener</hint>
+            <title lang="en">Scanner</title>
+            <hint lang="en">Scanner</hint>
+        </param>
+        <param name="param.scan.imageColor" type="STRING" displayType="COMBOBOX" datasource="wf.valuemap.imageColor" >
+            <title lang="cs">Barevnost</title>
+            <hint lang="cs">Barevnost</hint>
+            <title lang="en">Color</title>
+            <hint lang="en">Color</hint>
+        </param>
+        <param name="param.scan.fileFormat" type="STRING" displayType="COMBOBOX" datasource="wf.valuemap.fileFormat" >
+            <title lang="cs">Formát souboru</title>
+            <hint lang="cs">Formát souboru</hint>
+            <title lang="en">File format</title>
+            <hint lang="en">File format</hint>
+        </param>
+        <param name="param.scan.date" type="DATETIME" >
+            <title lang="cs">Datum skenování</title>
+            <hint lang="cs">Datum skenování</hint>
+            <title lang="en">Date of scanning</title>
+            <hint lang="en">Date of scanning</hint>
+        </param>
+        <param name="param.scan.dpi" type="NUMBER" >
+            <title lang="cs">DPI</title>
+            <hint lang="cs">Rozlišení DPI</hint>
+            <title lang="en">dpi</title>
+            <hint lang="en">Dots per inch.</hint>
+        </param>
+        <param name="param.scan.BcsBatch" required="true" type="STRING" displayType="TEXT" >
+            <title lang="cs">Dávka v BCS-2</title>
+            <hint lang="cs">Název dávky v BCS-2</hint>
+            <title lang="en">BCS-2 Batch name</title>
+            <hint lang="en">BCS-2 Batch name</hint>
+        </param>
+    </task>
+    <task name = "task.imageProcessing">
+        <title lang="cs">Úprava skenů</title>
+        <hint lang="cs">Úprava skenů - rozdělení dvoustran, narovnání, ořezy a další.</hint>
+        <hint lang="en">Processing of images (split pages, deskew, trimming etc.)</hint>
+        <setMaterial materialRef="material.folder.rawScan" way="INPUT" />
+        <setMaterial materialRef="material.folder.masterCopy" way="OUTPUT" />
+        <param name="param.imageProcessing.numberOfScans" required="true" type="NUMBER" >
+            <title lang="cs">Počet skenů</title>
+            <hint lang="cs">Počet skenů</hint>
+            <title lang="en">Number of scans</title>
+            <hint lang="en">Number of scans</hint>
+        </param>
+        <param name="param.imageProcessing.imageColor" type="STRING" displayType="COMBOBOX" datasource="wf.valuemap.imageColor" >
+            <title lang="cs">Barevnost</title>
+            <hint lang="cs">Barevnost</hint>
+            <title lang="en">Image color</title>
+            <hint lang="en">Color or monochrome.</hint>
+        </param>
+        <param name="param.imageProcessing.crop" type="NUMBER" displayType="CHECKBOX" >
+            <title lang="cs">Ořez</title>
+            <hint lang="cs">Ořez</hint>
+            <title lang="en">Crop</title>
+            <hint lang="en">Crop</hint>
+        </param>
+        <param name="param.imageProcessing.deskew" type="NUMBER" displayType="CHECKBOX" >
+            <title lang="cs">Narovnání</title>
+            <hint lang="cs">Narovnání</hint>
+            <title lang="en">Deskew</title>
+            <hint lang="en">Deskew</hint>
+        </param>
+        <param name="param.imageProcessing.rotation" type="NUMBER" displayType="CHECKBOX" >
+            <title lang="cs">Otočení</title>
+            <hint lang="cs">Otočení</hint>
+            <title lang="en">Image rotation</title>
+            <hint lang="en">Image rotation</hint>
+        </param>
+        <param name="param.imageProcessing.splitting" type="NUMBER" displayType="CHECKBOX" >
+            <title lang="cs">Rozřezání stránek</title>
+            <hint lang="cs">Rozřezání stránek</hint>
+            <title lang="en">Splitting of pages</title>
+            <hint lang="en">Splitting of pages</hint>
+        </param>
+    </task>
+    <task name = "task.ocr">
+        <title lang="cs">OCR</title>
+        <hint lang="cs">Vytvoření ORC, jeho připojení k naskenovaným souborům.</hint>
+        <hint lang="en">OCR</hint>
+        <setMaterial materialRef="material.folder.masterCopy" way="INPUT" />
+        <setMaterial materialRef="material.folder.ocr" way="OUTPUT" />
+        <param name="param.ocr.numberOfPages" required="true" type="NUMBER" >
+            <title lang="cs">Počet stran</title>
+            <hint lang="cs">Počet stran</hint>
+            <title lang="en">Number of pages</title>
+            <hint lang="en">Number of pages</hint>
+        </param>
+    </task>
+    <task name = "task.OcrAndSavingProcessedImages">
+        <title lang="cs">OCR a uložení upravených skenů</title>
+        <hint lang="cs">Přenesení (uložení) upravených skenů, zároveň se automaticky provede OCR.</hint>
+        <hint lang="en">OCR and saving processed images</hint>
+        <setMaterial materialRef="material.folder.OcrAndProcessedImages" way="INPUT" />
+        <param name="param.OcrAndSavingProcessedImages.numberOfOcr" required="true" type="NUMBER" >
+            <title lang="cs">Počet OCR</title>
+            <hint lang="cs">Počet OCR</hint>
+            <title lang="en">Number of OCR</title>
+            <hint lang="en">Number of OCR</hint>
+        </param>
+        <param name="param.OcrAndSavingProcessedImages.numberOfImages" required="true" type="NUMBER" >
+            <title lang="cs">Počet upravených skenů</title>
+            <hint lang="cs">Počet upravených skenů</hint>
+            <title lang="en">Number of Processed Images</title>
+            <hint lang="en">Number of Processed Images</hint>
+        </param>
+    </task>
+    <task name = "task.importFolderToProArc">
+        <title lang="cs">Import adresáře upravených skenů do ProArcu</title>
+        <hint lang="cs">Přesun adresáře s upravenými skeny (popř. i OCR) do importního adresáře konkrétního pracovníka v ProArcu.</hint>
+        <hint lang="en">Import folder to ProArc</hint>
+        <setMaterial materialRef="material.folder.OcrAndProcessedImages" way="INPUT" />
+    </task>
+    <task name = "task.metadataDescriptionInProArc">
+        <title lang="cs">Popis v ProArcu</title>
+        <hint lang="cs">Popis stran a přiřazení popsané dávky k digitálnímu objektu.</hint>
+        <hint lang="en">Metadata description in ProArc</hint>
+        <setMaterial materialRef="material.digitalDocument" way="INPUT" />
+        <param name="param.metadataDescriptionInProArc.numberOfImages" required="true" type="NUMBER" >
+            <title lang="cs">Počet popsaných stran</title>
+            <hint lang="cs">Počet popsaných stran</hint>
+            <title lang="en">Metadata description - number of pages</title>
+            <hint lang="en">Metadata description - number of pages</hint>
+        </param>
+        <param name="param.metadataDescriptionInProArc.date" required="true" type="DATETIME" >
+            <title lang="cs">Datum popisu v ProArcu</title>
+            <hint lang="cs">Datum popisu v ProArcu</hint>
+            <title lang="en">Date of metadata description</title>
+            <hint lang="en">Date of metadata description</hint>
+        </param>
+    </task>
+    <task name = "task.checkDataInProArc">
+        <title lang="cs">Kontrola v ProArcu</title>
+        <hint lang="cs">Kontrola popsaného objektu v ProArcu "s knihou v ruce" - kontrola popisu i skenů.</hint>
+        <hint lang="en">Check of data in ProArc</hint>
+        <setMaterial materialRef="material.digitalDocument" way="INPUT" />
+        <param name="param.checkDataInProArc.date" required="true" type="DATETIME" >
+            <title lang="cs">Datum kontroly v ProArcu</title>
+            <hint lang="cs">Datum kontroly v ProArcu</hint>
+            <title lang="en">Date of checking data in ProArc</title>
+            <hint lang="en">Date of checking data in ProArc</hint>
+        </param>
+    </task>
+    <task name = "task.pageMetadata">
+        <title lang="cs">Popsat metadata stránek</title>
+        <hint lang="cs">Vytvoření popisných metadat v ProArcu - Import - příprava metadat pro načtení do úložiště.</hint>
+        <hint lang="en">Page metadata</hint>
+        <setMaterial materialRef="material.folder.masterCopy" way="INPUT" />
+        <setMaterial materialRef="material.digitalDocument" way="OUTPUT" />
+    </task>
+    <task name = "task.linkingToDigitalObject">
+        <title lang="cs">Zařazení do digitálního objektu</title>
+        <hint lang="cs">Připojení stran s vytvořenými popisnými metadaty k nadřazenému objektu.</hint>
+        <hint lang="en">Linking to digital object</hint>
+        <setMaterial materialRef="material.digitalDocument" way="INPUT" />
+        <setMaterial materialRef="material.digitalDocument" way="OUTPUT" />
+    </task>
+    <task name = "task.getUrnnbn">
+        <title lang="cs">Přidělení URN:NBN</title>
+        <hint lang="cs">Registrace URN:NBN v Resolveru NK.</hint>
+        <hint lang="en">Registration of URN:NBN</hint>
+        <setMaterial materialRef="material.digitalDocument" way="INPUT" />
+    </task>
+    <task name = "task.returnItem">
+        <title lang="cs">Vrácení předlohy</title>
+        <hint lang="cs">Vrácení předlohy zpět (do skladu apod.).</hint>
+        <hint lang="en">Return of item</hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+        <param name="param.returnItem.date" required="true" type="DATETIME" >
+            <title lang="cs">Datum vrácení předlohy</title>
+            <hint lang="cs">Datum vrácení předlohy</hint>
+            <title lang="en">Date of return of the item</title>
+            <hint lang="en">Date of return of the item</hint>
+        </param>
+    </task>
+    <task name = "task.exportK4">
+        <title lang="cs">Export do K4</title>
+        <hint lang="cs">Export do K4</hint>
+        <hint lang="en">Export K4</hint>
+        <setMaterial materialRef="material.digitalDocument" way="INPUT" />
+    </task>
+    <task name = "task.rawScanStorage">
+        <title lang="cs">Archivace surových skenů</title>
+        <hint lang="cs">Archivace surových skenů</hint>
+        <hint lang="en">Raw scan Storage</hint>
+        <setMaterial materialRef="material.folder.rawScan" way="INPUT" />
+    </task>
+    <task name = "task.archivaceUpravenychSkenuAOcr">
+        <title lang="cs">Archivace upravených skenů a OCR</title>
+        <hint lang="cs"></hint>
+        <hint lang="en"></hint>
+        <setMaterial materialRef="material.folder.masterCopy" way="INPUT" />
+        <setMaterial materialRef="material.folder.ocr" way="INPUT" />
+    </task>
+    <task name = "task.exportNdkPsp">
+        <title lang="cs">NDK Export</title>
+        <hint lang="cs">Export balíčků z ProArcu - "NDK PSP Export".</hint>
+        <hint lang="en">Export of NDK PSP</hint>
+        <setMaterial materialRef="material.digitalDocument" way="INPUT" />
+        <param name="param.exportNdkPsp.date" required="true" type="DATETIME" >
+            <title lang="cs">Datum exportu NDK PSP</title>
+            <hint lang="cs">Datum exportu NDK PSP</hint>
+            <title lang="en">Date of NDK PSP export</title>
+            <hint lang="en">Date of NDK PSP export</hint>
+        </param>
+        <param name="param.exportNdkPsp.numberOfPackages" type="NUMBER" >
+            <title lang="cs">Počet vyexportovaných PSP</title>
+            <hint lang="cs">Počet vyexportovaných PSP</hint>
+            <title lang="en">Number of NDK PSP</title>
+            <hint lang="en">Number of NDK PSP</hint>
+        </param>
+    </task>
+    <task name = "task.validateNdkPsp">
+        <title lang="cs">Validace NDK PSP</title>
+        <hint lang="cs">Validace vyexportovaných balíčků NDK validátorem.</hint>
+        <hint lang="en">Validation of NDK PSP</hint>
+    </task>
+    <task name = "task.storagePackagePSPNDK">
+        <title lang="cs">Archivace balíčku PSP NDK</title>
+        <hint lang="cs">Archivace balíčků PSP NDK</hint>
+        <hint lang="en">Storage package PSP NDK</hint>
+    </task>
+    <task name = "task.saveNdkPspToStorage">
+        <title lang="cs">Uložení do úložiště - PSP</title>
+        <hint lang="cs">Uložení zvalidovaných NDK PSP do úložiště.</hint>
+        <hint lang="en">Saving NDK PSP to storage</hint>
+    </task>
+    <task name = "task.saveRawImagesToStorage">
+        <title lang="cs">Uložení do úložiště - surové skeny</title>
+        <hint lang="cs">Uložení surových skenů (tiff) do úložiště.</hint>
+        <hint lang="en">Saving raw images to storage</hint>
+    </task>
+    <task name = "task.storagePackageK4">
+        <title lang="cs">Archivace balíčku K4</title>
+        <hint lang="cs">Archivace balíčků K4</hint>
+        <hint lang="en">Storage package K4</hint>
+    </task>
+    <task name = "task.importDigitLibrary">
+        <title lang="cs">Import do Krameria</title>
+        <hint lang="cs">Import do Krameria.</hint>
+        <hint lang="en">Import to Digital Library</hint>
+        <param name="param.importDigitLibrary.date" required="true" type="DATETIME" >
+            <title lang="cs">Datum importu do DK</title>
+            <hint lang="cs">Datum importu do digitální knihovny</hint>
+            <title lang="en">Date of import to DL</title>
+            <hint lang="en">Date of import to Digital Library</hint>
+        </param>
+    </task>
+    <task name = "task.odeslaniPredlohyDoDcJenstejn">
+        <title lang="cs">Odeslání předlohy do DC Jenštejn</title>
+        <hint lang="cs">Odeslání předlohy do DC Jenštejn</hint>
+        <hint lang="en">Odeslání předlohy do DC Jenštejn</hint>
+    </task>
+    <task name = "task.kontrolaSkenovani">
+        <title lang="cs">Kontrola skenování</title>
+        <hint lang="cs">Kontrola skenování</hint>
+        <hint lang="en">Kontrola skenování</hint>
+    </task>
+    <task name = "task.archivaceSkenu">
+        <title lang="cs">Archivace skenů</title>
+        <hint lang="cs">Archivace skenů</hint>
+        <hint lang="en">Archivace skenů</hint>
+    </task>
+    <task name = "task.odbornaKontrolaKVO">
+        <title lang="cs">Odborná kontrola KVO</title>
+        <hint lang="cs">Odborná kontrola KVO</hint>
+        <hint lang="en">Odborná kontrola KVO</hint>
+    </task>
+    <task name = "task.archivacePuvodnichPDF">
+        <title lang="cs">Archivace původních PDF</title>
+        <hint lang="cs">Archivace původních PDF</hint>
+        <hint lang="en">Archivace původních PDF</hint>
+    </task>
+    <task name = "task.archivaceUpravenychPDF">
+        <title lang="cs">Archivace upravených PDF</title>
+        <hint lang="cs">Archivace upravených PDF</hint>
+        <hint lang="en">Archivace upravených PDF</hint>
+    </task>
+    <task name = "task.exportCEJSH">
+        <title lang="cs">Export CEJSH</title>
+        <hint lang="cs">Export CEJSH</hint>
+        <hint lang="en">Export CEJSH</hint>
+    </task>
+    <task name = "task.chooseItem">
+        <title lang="cs">Výběr exempláře</title>
+        <hint lang="cs">Výběr nejvhodnější předlohy (v případě více dostupných exemplářů).</hint>
+        <hint lang="en">Choice of item</hint>
+    </task>
+    <task name = "task.kontrolaPopisuDigitalnihoObjektu">
+        <title lang="cs">Kontrola popisu Digitálního objektu</title>
+        <hint lang="cs">Kontrola popisu digitálního objektu</hint>
+        <hint lang="en">Kontrola popisu digitálního objektu</hint>
+    </task>
+    <task name = "task.rebindItem">
+        <title lang="cs">Svázání předlohy</title>
+        <hint lang="cs">Svázání / převazba předlohy.</hint>
+        <hint lang="en">Rebinding</hint>
+    </task>
+    <task name = "task.RdImportFinished">
+        <title lang="cs">Hlášení do RD (hotovo)</title>
+        <hint lang="cs">Hlášení digitalizace (stav Dokončeno) do Registru digitalizace.</hint>
+        <hint lang="en">Import to Digitisation Registry - status Completed</hint>
+        <param name="param.RdImportFinished.batch" required="true" type="STRING" displayType="TEXT" >
+            <title lang="cs">Dávka pro RD - hotovo</title>
+            <hint lang="cs">Název importní dávky pro RD - hotová dig.</hint>
+            <title lang="en">RD import finished batch</title>
+            <hint lang="en">RD import finished batch</hint>
+        </param>
+    </task>
+    <task name = "task.updateBibRecordOwnCatalogue">
+        <title lang="cs">Aktualizace záznamu v Alephu (856+911)</title>
+        <hint lang="cs">Aktualizace bibliografického záznamu v katalogu vlastníka (doplnění polí 856 a 911).</hint>
+        <hint lang="en">Update of bibliographic record (own catalog)</hint>
+    </task>
+    <task name = "task.updateBibRecordCaslin">
+        <title lang="cs">Aktualizace v SK (911)</title>
+        <hint lang="cs">Aktualizace bibliografického záznamu v Souborném katalogu ČR (pole 911).</hint>
+        <hint lang="en">Update of bibliographic record (Caslin)</hint>
+    </task>
+    <task name = "task.correction">
+        <title lang="cs">Oprava</title>
+        <hint lang="cs">Oprava.</hint>
+        <hint lang="en">Correction</hint>
+        <setMaterial materialRef="material.physicalObject" way="INPUT" />
+        <setMaterial materialRef="material.digitalDocument" way="INPUT" />
+        <setMaterial materialRef="material.folder.OcrAndProcessedImages" way="INPUT" />
+        <param name="param.correction.date" required="true" type="DATETIME" >
+            <title lang="cs">Datum opravy</title>
+            <hint lang="cs">Datum opravy</hint>
+            <title lang="en">Date of correction</title>
+            <hint lang="en">Date of correction</hint>
+        </param>
+    </task>
+    <task name = "task.tempSaveRawImages">
+        <title lang="cs">Dočasné uložení surových skenů</title>
+        <hint lang="cs">Dočasné uložení surových skenů (před zpracováním).</hint>
+        <hint lang="en">Temporary saving of raw images</hint>
+    </task>
+       <task name = "task.fulltext">
+		<title lang="cs">Přidání plného textu</title>
+		<hint lang="cs">Přidání plného textu</hint>
+		<hint lang="en">Přidání plného textu</hint>
+	<setMaterial materialRef="material.physicalObject" way="INPUT" />
+	</task>
+	
+	<task name = "task.handingOrder">
+		<title lang="cs">Předání objednávky</title>
+		<hint lang="cs">Předání objednávky</hint>
+		<hint lang="en">Předání objednávky</hint>
+	<setMaterial materialRef="material.physicalObject" way="INPUT" />
+	<setMaterial materialRef="material.digitalDocument" way="INPUT" />
+	</task>
+	
+	<task name = "task.ExposureDeliveryNote">
+	</task>
+	
+	
+	
+                 
+   
+   
+    <!-- ************************************************************************
+    ******************** DEFINICE PROFILŮ  **************************************
+    ************************************************************************ -->
+
+    <!-- ******************** JOB: KNAVStareTisky ******************************* -->
+    <job name="job.KNAVstareTisky" priority="2">
+        <!-- *** Vlastník *** -->
+        
+        <!-- *** Lokalizace *** -->
+        <title lang="cs">KNAV Staré tisky</title>
+        <title lang="en">KNAV Staré tisky</title>
+        <hint lang="cs">KNAV Staré tisky</hint>
+        <hint lang="en">KNAV Staré tisky</hint>
+
+        <!-- ***** Seznam úkolů ***** -->
+        
+        
+        <step taskRef="task.odeslaniPredlohyDoDcJenstejn"></step>
+        <step taskRef="task.getItem">
+            <blocker taskRef="task.odeslaniPredlohyDoDcJenstejn"/>
+        </step>
+        <step taskRef="task.pageCutting" optional="true"></step>
+        <step taskRef="task.scan">
+            <blocker taskRef="task.pageCutting"/>
+            <setParam paramRef="param.scan.dpi">300</setParam>
+            <setParam paramRef="param.scan.imageColor">greyscale</setParam>
+            <setParam paramRef="param.scan.fileFormat">tiff</setParam>
+        </step>
+        <step taskRef="task.scanOfCover">
+            <blocker taskRef="task.pageCutting"/>
+            <setParam paramRef="param.scanOfCover.dpi">300</setParam>
+            <setParam paramRef="param.scanOfCover.imageColor">color</setParam>
+            <setParam paramRef="param.scanOfCover.fileFormat">tiff</setParam>
+        </step>
+        <step taskRef="task.kontrolaSkenovani">
+            <blocker taskRef="task.scan"/>
+            <blocker taskRef="task.scanOfCover"/>
+        </step>
+        <step taskRef="task.archivaceSkenu">
+            <blocker taskRef="task.scan"/>
+        </step>
+        <step taskRef="task.returnItem">
+            <blocker taskRef="task.scan"/>
+        </step>
+        <step taskRef="task.importFolderToProArc">
+            <blocker taskRef="task.scan"/>
+        </step>
+        <step taskRef="task.pageMetadata">
+            <blocker taskRef="task.importFolderToProArc"/>
+        </step>
+        <step taskRef="task.odbornaKontrolaKVO">
+            <blocker taskRef="task.pageMetadata"/>
+        </step>
+        <step taskRef="task.linkingToDigitalObject">
+            <blocker taskRef="task.pageMetadata"/>
+        </step>
+        <step taskRef="task.exportK4">
+            <blocker taskRef="task.linkingToDigitalObject"/>
+        </step>
+        <step taskRef="task.storagePackageK4">
+            <blocker taskRef="task.exportK4"/>
+        </step>
+        <step taskRef="task.importDigitLibrary">
+            <blocker taskRef="task.exportK4"/>
+        </step>
+        
+        
+    </job>
+
+
+    <!-- ******************** JOB: NDK ******************************* -->
+    <job name="job.ndk">
+        <!-- *** Vlastník *** -->
+        
+        <!-- *** Lokalizace *** -->
+        <title lang="cs">NDK</title>
+        <title lang="en">NDK</title>
+        <hint lang="cs">Zpracování záměru podle NDK</hint>
+        <hint lang="en">NDK Workflow</hint>
+
+        <!-- *** Seznam úkolů *** -->
+       
+    </job>
+
+
+    <!-- ******************** JOB: KNAV Monografie ******************************* -->
+    <job name="KNAVMonografie">
+        <!-- *** Lokalizace *** -->
+        <title lang="cs">KNAV monografie</title>
+        <title lang="en">KNAV Monograph</title>
+        <hint lang="cs">Zpracování Monografie KNAV</hint>
+        <hint lang="en">KNAV Monograph workflow</hint>
+
+        <!-- *** Seznam úkolů *** -->
+   
+        <step taskRef="task.correction" optional="true"></step>
+        <step taskRef="task.pageCutting" optional="true"></step>
+        <step taskRef="task.scan">
+            <blocker taskRef="task.pageCutting"/>
+            <setParam paramRef="param.scan.dpi">300</setParam>
+            <setParam paramRef="param.scan.imageColor">color</setParam>
+            <setParam paramRef="param.scan.fileFormat">tiff</setParam>
+        </step>
+        <step taskRef="task.scanOfCover">
+            <blocker taskRef="task.pageCutting"/>
+            <setParam paramRef="param.scanOfCover.dpi">300</setParam>
+            <setParam paramRef="param.scanOfCover.imageColor">greyscale</setParam>
+            <setParam paramRef="param.scanOfCover.fileFormat">tiff</setParam>
+        </step>
+        <step taskRef="task.rawScanStorage">
+            <blocker taskRef="task.scan"/>
+            <blocker taskRef="task.scanOfCover"/>
+        </step>
+        <step taskRef="task.imageProcessing">
+            <blocker taskRef="task.scan"/>
+            <blocker taskRef="task.scanOfCover"/>
+        </step>
+        <step taskRef="task.ocr">
+            <blocker taskRef="task.imageProcessing"/>
+        </step>
+        <step taskRef="task.OcrAndSavingProcessedImages">
+            <blocker taskRef="task.imageProcessing"/>
+            <blocker taskRef="task.ocr"/>
+        </step>
+        <step taskRef="task.importFolderToProArc">
+            <blocker taskRef="task.imageProcessing"/>
+        </step>
+        <step taskRef="task.pageMetadata">
+            <blocker taskRef="task.importFolderToProArc"/>
+        </step>
+        <step taskRef="task.linkingToDigitalObject">
+            <blocker taskRef="task.pageMetadata"/>
+        </step>
+        <step taskRef="task.exportK4">
+            <blocker taskRef="task.linkingToDigitalObject"/>
+        </step>
+        <step taskRef="task.exportNdkPsp">
+            <blocker taskRef="task.linkingToDigitalObject"/>
+        </step>
+        <step taskRef="task.storagePackagePSPNDK">
+            <blocker taskRef="task.exportNdkPsp"/>
+        </step>
+        <step taskRef="task.storagePackageK4">
+            <blocker taskRef="task.exportK4"/>
+        </step>
+        <step taskRef="task.importDigitLibrary">
+            <blocker taskRef="task.exportK4"/>
+        </step>        
+
+    </job>
+
+
+    <!-- ******************** JOB: Hradec - monografie ******************************* -->
+    <job name="job.Hradec.monografie" priority="2">
+        <!-- *** Vlastník *** -->
+        
+        <!-- *** Lokalizace *** -->
+        <title lang="cs">Hradec - Monografie</title>
+        <title lang="en">Hradec - Monografie</title>
+        <hint lang="cs">Hradec - Monografie</hint>
+        <hint lang="en">Hradec - Monografie</hint>
+
+        <!-- ***** Seznam úkolů ***** -->
+        
+        
+        <step taskRef="task.chooseTitle"></step>
+        <step taskRef="task.prepareItem">
+            <blocker taskRef="task.chooseTitle"/>
+        </step>
+        <step taskRef="task.recatalog">
+            <blocker taskRef="task.prepareItem"/>
+        </step>
+        <step taskRef="task.numberCnb">
+            <blocker taskRef="task.recatalog"/>
+        </step>
+        <step taskRef="task.updateBibInfo">
+            <blocker taskRef="task.numberCnb"/>
+        </step>
+        <step taskRef="task.RdImportProgress" optional="true">
+            <blocker taskRef="task.numberCnb"/>
+        </step>
+        <step taskRef="task.unbindItem" optional="true">
+            <blocker taskRef="task.prepareItem"/>
+        </step>
+        <step taskRef="task.scan">
+            <blocker taskRef="task.numberCnb"/>
+            <blocker taskRef="task.unbindItem"/>
+        </step>
+        <step taskRef="task.tempSaveRawImages">
+            <blocker taskRef="task.scan"/>
+        </step>
+        <step taskRef="task.imageProcessing">
+            <blocker taskRef="task.tempSaveRawImages"/>
+        </step>
+        <step taskRef="task.OcrAndSavingProcessedImages">
+            <blocker taskRef="task.imageProcessing"/>
+        </step>
+        <step taskRef="task.importFolderToProArc">
+            <blocker taskRef="task.OcrAndSavingProcessedImages"/>
+        </step>
+        <step taskRef="task.metadataDescriptionInProArc">
+            <blocker taskRef="task.importFolderToProArc"/>
+        </step>
+        <step taskRef="task.checkDataInProArc">
+            <blocker taskRef="task.metadataDescriptionInProArc"/>
+        </step>
+        <step taskRef="task.getUrnnbn">
+            <blocker taskRef="task.checkDataInProArc"/>
+        </step>
+        <step taskRef="task.exportNdkPsp">
+            <blocker taskRef="task.getUrnnbn"/>
+        </step>
+        <step taskRef="task.validateNdkPsp">
+            <blocker taskRef="task.exportNdkPsp"/>
+        </step>
+        <step taskRef="task.saveNdkPspToStorage">
+            <blocker taskRef="task.validateNdkPsp"/>
+        </step>
+        <step taskRef="task.saveRawImagesToStorage">
+            <blocker taskRef="task.scan"/>
+        </step>
+        <step taskRef="task.importDigitLibrary">
+            <blocker taskRef="task.validateNdkPsp"/>
+        </step>
+        <step taskRef="task.updateBibRecordOwnCatalogue">
+            <blocker taskRef="task.importDigitLibrary"/>
+        </step>
+        <step taskRef="task.RdImportFinished">
+            <blocker taskRef="task.updateBibRecordOwnCatalogue"/>
+        </step>
+        <step taskRef="task.updateBibRecordCaslin">
+            <blocker taskRef="task.importDigitLibrary"/>
+        </step>
+        <step taskRef="task.rebindItem" optional="true">
+            <blocker taskRef="task.checkDataInProArc"/>
+            <blocker taskRef="task.unbindItem"/>
+        </step>
+        <step taskRef="task.returnItem">
+            <blocker taskRef="task.checkDataInProArc"/>
+        </step>
+                                
+    </job>
+   
+   <!-- ******************** JOB: KNAV Zakázka ******************************* -->
+    <job name="KNAVZakázka">
+        <!-- *** Lokalizace *** -->
+        <title lang="cs">KNAV Zakázka</title>
+        <title lang="en">KNAV Order</title>
+        <hint lang="cs">Zpracování Zakázky KNAV</hint>
+        <hint lang="en">KNAV Order workflow</hint>
+
+        <!-- *** Seznam úkolů *** -->
+
+		
+		<step taskRef="task.getItem">
+		</step>
+		<step taskRef="task.scan">
+                    <blocker taskRef="task.getItem"/>
+		</step>
+		<step taskRef="task.scanOfCover">
+                    <blocker taskRef="task.getItem"/>
+		</step>
+		<step taskRef="task.kontrolaSkenovani">
+                    <blocker taskRef="task.scan"/>
+                    <blocker taskRef="task.scanOfCover"/>
+		</step>
+		<step taskRef="task.rawScanStorage">
+                    <blocker taskRef="task.scan"/>
+		</step>
+		<step taskRef="task.imageProcessing">
+                    <blocker 	taskRef="task.scan"/>
+		</step>
+		<step taskRef="task.ocr">
+                    <blocker taskRef="task.scan"/>
+		</step>
+		<step taskRef="task.OcrAndSavingProcessedImages">
+                    <blocker taskRef="task.ocr"/>
+		</step>
+		<step taskRef="task.metadataDescriptionInProArc">
+                    <blocker taskRef="task.scan"/>
+		</step>
+		<step taskRef="task.exportK4">
+                    <blocker taskRef="task.metadataDescriptionInProArc"/>
+		</step>
+		<step taskRef="task.exportNdkPsp">
+                    <blocker taskRef="task.metadataDescriptionInProArc"/>
+		</step>
+		<step taskRef="task.storagePackageK4">
+                    <blocker taskRef="task.exportK4"/>
+		</step>
+		<step taskRef="task.storagePackagePSPNDK">
+                    <blocker taskRef="task.exportNdkPsp"/>
+		</step>
+		<step taskRef="task.handingOrder">
+                    <blocker taskRef="task.exportNdkPsp"/>
+                    <blocker taskRef="task.storagePackageK4"/>
+		</step>
+		<step taskRef="task.importDigitLibrary">
+                    <blocker taskRef="task.exportK4"/>
+                    <blocker taskRef="task.exportNdkPsp"/>
+		</step>
+		<step taskRef="task.returnItem">
+                    <blocker taskRef="task.handingOrder"/>
+		</step>
+		<step taskRef="task.ExposureDeliveryNote">
+                    <blocker taskRef="task.handingOrder"/>
+		</step>
+		
+		
+	</job>
+	
+	
+	<!-- ******************** JOB: KNAV Články ******************************* -->
+	<job name="job.clanky" priority="2">
+        <!-- *** Vlastník *** -->
+        
+        <!-- *** Lokalizace *** -->
+        <title lang="cs">Články</title>
+  
+        <!-- ***** Seznam úkolů ***** -->
+        <step taskRef="task.fulltext"></step>
+		
+		<step taskRef="task.exportK4">
+		<blocker taskRef="task.fulltext"/>
+		</step>
+				
+		</job>
+   
 </workflow>
