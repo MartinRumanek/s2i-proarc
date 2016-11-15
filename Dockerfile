@@ -62,6 +62,8 @@ ENV PROARC_HOME=/usr/local/tomcat/.proarc
 RUN groupadd -r $TOMCAT_USER && \
     useradd -r -u $TOMCAT_UID -g $TOMCAT_USER $TOMCAT_USER -d $HOME
 
+
+RUN curl https://github.com/jkremlacek/s2i-proarc/releases/download/test/proarc.war -o proarc.war
 ADD proarc.war /usr/local/tomcat/webapps/proarc.war
 
 ENV KDU_HOME=/usr/kakadu
