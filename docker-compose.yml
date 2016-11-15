@@ -4,8 +4,14 @@ services:
     image: moravianlibrary/proarc
     ports:
       - "80:8080"
+      - "5841:5841"
+    volumes: 
+      - /data/proarc_image/proarc/:/usr/local/tomcat/.proarc/
+      - /data/proarc_image/proarc_conf/:/usr/local/tomcat/conf
+    environment:
+      - CATALINA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5841"
   fcrepo:
-    image: moravianlibrary/fcrepo:3.8.1-mulgara
+    image: moravianlibrary/fcrepo
     environment:
       - FEDORA_PASSWORD=fedoraAdmin
       - "FEDORA_DB_JDBC_URL=jdbc:postgresql://fedoraPostgres:5432/fedora3"
@@ -14,6 +20,10 @@ services:
       - "RITRIPLES_DB_JDBC_URL=jdbc:postgresql://riTriplesPostgres:5432/riTriples"
       - RITRIPLES_DB_USER=fedoraAdmin
       - RITRIPLES_DB_PASSWORD=fedoraAdmin
+    volumes:
+      - /data/proarc_image/proarc/users/:/usr/local/tomcat/.proarc/users
+      - /data/proarc_image/fedora/resourceIndex:/usr/local/fedora/data/resourceIndex
+      - /data/proarc_image/fedora/objectStore:/usr/local/fedora/data/objectStore
     ports:
       - "8080:8080"
   proarcPostgres:
@@ -22,15 +32,21 @@ services:
       - POSTGRES_USER=proarcAdmin
       - POSTGRES_PASSWORD=proarcAdmin
       - POSTGRES_DB=proarc
+    volumes:
+      - /data/proarc_image/proarcPostgres/:/var/lib/postgresql/data/
   fedoraPostgres:
     image: "postgres:9.6"
     environment:
       - POSTGRES_USER=fedoraAdmin
       - POSTGRES_PASSWORD=fedoraAdmin
       - POSTGRES_DB=fedora3
+    volumes:
+      - /data/proarc_image/fedoraPostgres/:/var/lib/postgresql/data/
   riTriplesPostgres:
     image: "postgres:9.6"
     environment:
       - POSTGRES_USER=fedoraAdmin
       - POSTGRES_PASSWORD=fedoraAdmin
       - POSTGRES_DB=riTriples
+    volumes:
+      - /data/proarc_image/riTriplesPostgres/:/var/lib/postgresql/data/
