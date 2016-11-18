@@ -23,22 +23,25 @@ LOCAL_SOURCE_DIR=/tmp/src
 restore_saved_artifacts
 
 # install library to local maven repo
-curl -fSL "https://github.com/proarc/proarc/releases/download/v3.1/proarc-3.1-release.zip" -o proarc.zip
-unzip proarc.zip 
-unzip proarc-3.1-20160701181742/proarc.war
-mvn install:install-file -Dfile=WEB-INF/lib/jai_core-1.1.1_01.jar -DgroupId=javax.media -DartifactId=jai_core -Dversion=1.1.1_01 -Dpackaging=jar
-mvn install:install-file -Dfile=WEB-INF/lib/jai_codec-1.3.1_03.jar  -DgroupId=com.sun.media.jai.codec -DartifactId=jai_codec -Dversion=1.3.1_03 -Dpackaging=jar
-mvn install:install-file -Dfile=WEB-INF/lib/jai_imageio-1.1.jar  -DgroupId=com.sun.media -DartifactId=jai_imageio -Dversion=1.1 -Dpackaging=jar
-mvn install:install-file -Dfile=WEB-INF/lib/javadjvu-0.8.09.jar  -DgroupId=com.foxtrottechnologies -DartifactId=javadjvu -Dversion=0.8.09 -Dpackaging=jar
-mvn install:install-file -Dfile=WEB-INF/lib/djvuframe-0.8.09.jar  -DgroupId=com.foxtrottechnologies -DartifactId=djvuframe -Dversion=0.8.09 -Dpackaging=jar
-mvn install:install-file -Dfile=WEB-INF/lib/codemirror2gwt-1.1.0.jar -DgroupId=com.google.codemirror2gwt -DartifactId=codemirror2gwt -Dversion=1.1.0 -Dpackaging=jar
-mvn install:install-file -Dfile=WEB-INF/lib/org.moxieapps.gwt.uploader-1.1.0.jar -DgroupId=org.moxieapps.gwt -DartifactId=org.moxieapps.gwt.uploader -Dversion=1.1.0 -Dpackaging=jar
-mvn com.isomorphic:isc-maven-plugin:install -Dproduct=SMARTGWT -Dlicense=LGPL -DbuildNumber=4.0p -DbuildDate=2016-07-21
+# curl -fSL "https://github.com/proarc/proarc/releases/download/v3.1/proarc-3.1-release.zip" -o proarc.zip
+
+#unzip proarc.zip 
+#upraven nazev slozky!!!
+#unzip proarc-3.2-SNAPSHOT-20161020002940/proarc.war
+#mvn install:install-file -Dfile=WEB-INF/lib/jai_core-1.1.1_01.jar -DgroupId=javax.media -DartifactId=jai_core -Dversion=1.1.1_01 -Dpackaging=jar
+#mvn install:install-file -Dfile=WEB-INF/lib/jai_codec-1.3.1_03.jar  -DgroupId=com.sun.media.jai.codec -DartifactId=jai_codec -Dversion=1.3.1_03 -Dpackaging=jar
+#mvn install:install-file -Dfile=WEB-INF/lib/jai_imageio-1.1.jar  -DgroupId=com.sun.media -DartifactId=jai_imageio -Dversion=1.1 -Dpackaging=jar
+#mvn install:install-file -Dfile=WEB-INF/lib/javadjvu-0.8.09.jar  -DgroupId=com.foxtrottechnologies -DartifactId=javadjvu -Dversion=0.8.09 -Dpackaging=jar
+#mvn install:install-file -Dfile=WEB-INF/lib/djvuframe-0.8.09.jar  -DgroupId=com.foxtrottechnologies -DartifactId=djvuframe -Dversion=0.8.09 -Dpackaging=jar
+#mvn install:install-file -Dfile=WEB-INF/lib/codemirror2gwt-1.1.0.jar -DgroupId=com.google.codemirror2gwt -DartifactId=codemirror2gwt -Dversion=1.1.0 -Dpackaging=jar
+#mvn install:install-file -Dfile=WEB-INF/lib/org.moxieapps.gwt.uploader-1.1.0.jar -DgroupId=org.moxieapps.gwt -DartifactId=org.moxieapps.gwt.uploader -Dversion=1.1.0 -Dpackaging=jar
+#mvn com.isomorphic:isc-maven-plugin:install -Dproduct=SMARTGWT -Dlicense=LGPL -DbuildNumber=4.0p -DbuildDate=2016-07-21
 
 
 pushd $LOCAL_SOURCE_DIR &> /dev/null
-mvn install -Pproarc.fixedSmartGwt -DskipTests
+#mvn install -Pproarc.fixedSmartGwt -DskipTests
 
-mv proarc-webapp/target/proarc.war $DEPLOY_DIR
+# mv proarc-webapp/target/proarc.war $DEPLOY_DIR
+# mv proarc.war $DEPLOY_DIR
 
 # TODO
