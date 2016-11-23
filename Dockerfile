@@ -7,7 +7,7 @@ ENV MAVEN_VERSION=3.3.9 \
     CATALINA_HOME=/usr/local/tomcat \
     JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8 \
     JAVA_OPTS="-Dfile.encoding=UTF8 -Djava.awt.headless=true -Dfile.encoding=UTF8 -XX:MaxPermSize=256m -Xms1024m -Xmx3072m" 
-ENV TOMCAT_TGZ_URL=https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz \
+ENV TOMCAT_TGZ_URL=https://archive.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz \
     JDBC_DRIVER_DOWNLOAD_URL=https://jdbc.postgresql.org/download/postgresql-9.4.1211.jre7.jar
 
 # Set the labels that are used for Openshift to describe the builder image.
@@ -19,9 +19,9 @@ LABEL io.k8s.description="Proarc" \
 
 ### OLD
 
-#RUN curl -sL --no-verbose http://ftp-devel.mzk.cz/jre/jdk-7u75-linux-x64.tar.gz -o /tmp/java.tar.gz
-#RUN mkdir -p /usr/local/java
-#ENV JAVA_HOME /usr/local/java/jdk1.7.0_75
+# RUN curl -sL --no-verbose http://ftp-devel.mzk.cz/jre/jdk-7u75-linux-x64.tar.gz -o /tmp/java.tar.gz
+# RUN mkdir -p /usr/local/java
+# ENV JAVA_HOME /usr/local/java/jdk1.7.0_75
 
 ### NEW
 
@@ -59,12 +59,27 @@ COPY  ["run", "assemble", "save-artifacts", "usage", "/usr/libexec/s2i/"]
 ENV TOMCAT_USER tomcat
 ENV TOMCAT_UID 8983
 ENV PROARC_HOME=/usr/local/tomcat/.proarc
-RUN groupadd -r $TOMCAT_USER && \
-    useradd -r -u $TOMCAT_UID -g $TOMCAT_USER $TOMCAT_USER -d $HOME
+RUN groupadd -r $TOMCAT_USER \ 
+   	&& useradd -r -u $TOMCAT_UID -g $TOMCAT_USER $TOMCAT_USER -d $HOME
 
 
-RUN curl https://github.com/jkremlacek/s2i-proarc/releases/download/test/proarc.war -o proarc.war
-ADD proarc.war /usr/local/tomcat/webapps/proarc.war
+# RUN curl https://github.com/jkremlacek/s2i-proarc/releases/download/test/proarc.war -o proarc.war
+# ADD proarc.war /usr/local/tomcat/webapps/proarc.war
+
+### PDF CONVERTOR
+
+# ENV GHOST_HOME=/usr/ghost
+# WORKDIR $GHOST_HOME
+
+# ADD archives/ghostscript-9.20-linux-x86_64.tgz $GHOST_HOME
+# RUN tar -xvf ghostscript-9.20-linux-x86_64.tgz \
+#	&& rm ghostscript-9.20-linux-x86_64.tgz \
+#	&& mv ghostscript-9.20-linux-x86_64/* ./
+
+# ADD archives/ImageMagick-7.0.3-7.x86_64.rpm $GHOST_HOME
+# RUN rpm -Uvh ImageMagick-7.0.3-7.x86_64.rpm
+
+### KAKADU
 
 ENV KDU_HOME=/usr/kakadu
 ENV KDU_EXEC=${KDU_HOME}/bin/kdu_compress
@@ -81,6 +96,8 @@ RUN curl http://kakadusoftware.com/wp-content/uploads/2014/06/KDU78_Demo_Apps_fo
 RUN mv KDU78_Demo_Apps_for_Linux-x86-64_160226/* ./
 
 RUN rmdir KDU78_Demo_Apps_for_Linux-x86-64_160226
+
+### KAKADU END
 
 RUN chown -R $TOMCAT_USER:$TOMCAT_USER $HOME $CATALINA_HOME $KDU_HOME
 
